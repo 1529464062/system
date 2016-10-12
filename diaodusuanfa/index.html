@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>这里演示关于进程-资源安全的求解方案</title>
+	</head>
+
+	<body>
+		<!--
+        	作者：1529464062@qq.com
+        	时间：2016-10-11
+        	描述：进程数量
+        -->
+		<span>进程总数</span>
+		<input type="number" name="ProgramSum" id="ProgramSum" value="" />
+		<!--
+        	作者：1529464062@qq.com
+        	时间：2016-10-11
+        	描述：资源总量
+        -->
+		<span>资源总数</span>
+		<input type="number" name="ResouseSum" id="ResouseSum" value="" />
+		<input type="button" name="run" id="run" value="生成结构" />
+		<div id="content">
+			<!--
+            	作者：1529464062@qq.com
+            	时间：2016-10-11
+            	描述：在这里存放生成后的结构
+            -->
+			<div id="">
+				<h1>设置已占用资源</h1>
+				<table id="one">
+					<!--<tr class="title">
+						<td></td>
+						<td>资源1</td>
+					</tr>
+					<tr>
+						<td>进程1</td>
+						<td><input type="number" class="value" /></td>
+					</tr>-->
+				</table>
+			</div>
+			<div>
+				<h1>设置需请求资源</h1>
+				<table id="tow">
+					<!--<tr class="title">
+						<td></td>
+						<td>资源1</td>
+					</tr>
+					<tr>
+						<td>进程1</td>
+						<td><input type="number" class="value" /></td>
+					</tr>-->
+				</table>
+			</div>
+			<div>
+				<h1>设置剩余资源量</h1>
+				<table id="three">
+					<!--<tr class="title">
+            		<td></td>
+            		<td>资源1</td>            		            		            
+            	</tr>
+            	<tr>            		
+            		<td>进程1</td>
+            		<td><input type="number" class="value"/></td>
+            	</tr>-->
+				</table>
+			</div>
+		</div>
+		<div id="response">
+			<input type="button" id="responseBtn" value="获取" />
+			<textarea id="list"></textarea>
+		</div>
+		<script type="text/javascript">
+			var pSum = 0;
+			var rSum = 0;
+			/*
+			 * 判断，第一个参数数组中的所有元素是否大于第二个参数数组中的对应元素
+			 */
+			var bjszdx = function(Array1, Array2) {
+				if(Array1.length == Array2.length - 1) {
+					for(var i = 0; i < Array1.length; i++) {
+						if(parseInt(Array1[i]) >= parseInt(Array2[i + 1])) {
+
+						} else {
+							return false;
+						}
+					}
+					return true;
+				} else {
+					alert("异常");
+				}
+			};
+			/*
+			 * 执行数组加法
+			 */
+			var szAdd = function(Array1, Array2) {
+				var tempArray = new Array();
+				for(var i = 0; i < Array1.length; i++) {
+					tempArray.push(parseInt(Array1[i]) + parseInt(Array2[i]));
+				}
+				console.log("剩余资源加法：" + tempArray.toString());
+				return tempArray;
+			};
+			document.getElementById("run").addEventListener("click", function() {
+				/*
+				 * 点击运行后的逻辑是
+				 * 0、获取 进程数，资源数
+				 * 1、生成，进程-资源的 已占用矩阵，等待用户输入
+				 * 2、生成，进程-资源 请求矩阵，等待用户输入
+				 * 3、生成，系统剩余资源矩阵，等待用户输入
+				 * 4、生成，页面运行过程区，用于存储运算过程
+				 */
+				pSum = parseInt(document.getElementById("ProgramSum").value);
+				rSum = parseInt(document.getElementById("ResouseSum").value);
+				//先构造第一个，已占用资源量
+				//构造第一行
+				var trHtml = "<tr><td></td>";
+				for(var j = 0; j < rSum; j++) {
+					trHtml += "<td>" + "资源" + (j + 1) + "</td>";
+				}
+				trHtml += "</tr>";
+				var table1 = document.getElementById("one");
+				table1.innerHTML = "";
+				table1.innerHTML += trHtml;
+				for(var i = 0; i < pSum; i++) {
+					trHtml = "";
+					trHtml = "<tr><td>进程" + (i + 1) + "</td>";
+					for(var j = 0; j < rSum; j++) {
+						trHtml += "<td><input type='number' value='0' /></td>";
+					}
+					trHtml += "</tr>";
+					table1.innerHTML += trHtml;
+				}
+
+				////////////设置请求资源数
+				//先构造第一个，已占用资源量
+				//构造第一行
+
+				trHtml = "<tr><td></td>";
+				for(var j = 0; j < rSum; j++) {
+					trHtml += "<td>" + "资源" + (j + 1) + "</td>";
+				}
+				trHtml += "</tr>";
+				table1 = document.getElementById("tow");
+				table1.innerHTML = "";
+				table1.innerHTML += trHtml;
+				for(var i = 0; i < pSum; i++) {
+					trHtml = "";
+					trHtml = "<tr><td>进程" + (i + 1) + "</td>";
+					for(var j = 0; j < rSum; j++) {
+						trHtml += "<td><input type='number' value='0' /></td>";
+					}
+					trHtml += "</tr>";
+					table1.innerHTML += trHtml;
+				}
+
+				/**************  设置剩余资源总量  *****************/
+				trHtml = "<tr>";
+				for(var j = 0; j < rSum; j++) {
+					trHtml += "<td>" + "资源" + (j + 1) + "</td>";
+				}
+				trHtml += "</tr>";
+				table1 = document.getElementById("three");
+				table1.innerHTML = "";
+				table1.innerHTML = trHtml;
+				trHtml = "<tr>";
+				for(var j = 0; j < rSum; j++) {
+					trHtml += "<td><input type='number' value='0' /></td>";
+				}
+				trHtml += "</tr>";
+				table1.innerHTML += trHtml;
+				document.getElementById("responseBtn").addEventListener("click", function() {
+					try {
+						pSum = parseInt(document.getElementById("ProgramSum").value);
+						rSum = parseInt(document.getElementById("ResouseSum").value);
+						//1、获取已占用资源的二维数组
+						var uArray = new Array();
+						for(var i = 0; i < pSum; i++) {
+							var tempArray = new Array();
+							for(var j = 0; j < rSum; j++) {
+								var wz = i * rSum + j;
+								tempArray.push(parseInt(document.getElementById("one").getElementsByTagName("input")[wz].value));
+							}
+							uArray.push(tempArray);
+						}
+						console.log(uArray);
+						//2、获取请求资源的二维数组
+						var rArray = new Array();
+						for(var i = 0; i < pSum; i++) {
+							var tempArray = new Array();
+							tempArray.push("进程" + (i + 1));
+							for(var j = 0; j < rSum; j++) {
+								var wz = i * rSum + j;
+								tempArray.push(parseInt(document.getElementById("tow").getElementsByTagName("input")[wz].value));
+							}
+							rArray.push(tempArray);
+						}
+						console.log(rArray);
+						//获取剩余资源的一维数组
+						var aArray = new Array();
+						for(var i = 0; i < rSum; i++) {
+							aArray.push(parseInt(document.getElementById("three").getElementsByTagName("input")[i].value));
+						}
+						console.log(aArray);
+						//准备执行关键逻辑
+						//for(var i = 0; i < pSum; i++) {
+						var i = 0;
+						var k = 0;
+						while(pSum != 0) {
+							console.log(pSum);
+							if(bjszdx(aArray, rArray[i])) {
+								//这里说明有符合条件的进程
+								//执行数组加法，赋值给现有数组
+								var ccArray = szAdd(aArray, uArray[i]);
+								//console.log("执行加法后得到的");
+								//console.log(ccArray);
+								for(var j = 0; j < ccArray.length; j++) {
+									aArray[j] = ccArray[j];
+								}
+								console.log(aArray);
+								//准备移除数组元素								
+								document.getElementById("list").value += rArray[i][0] + "运行\r\n";
+								document.getElementById("list").value += "当前剩余资源" + aArray.toString() + "\r\n";
+								uArray.splice(i, 1);
+								rArray.splice(i, 1);
+								pSum = pSum - 1;
+								k++;
+								i = 0;
+							} else {
+								if(i == pSum - 1) {
+									//这里说明，没有符合条件的进程，系统死了
+									document.getElementById("list").value += "当前资源不足，没有进程能够达到需求";
+									break;
+								} else {
+									i++;
+								}
+							}
+
+						}
+					} catch(e) {
+						console.log(e.message);
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>
